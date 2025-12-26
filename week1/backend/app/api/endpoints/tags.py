@@ -55,6 +55,16 @@ async def update_tag(tag_id: int, tag_update: TagCreate, db: AsyncSession = Depe
     logger.info(f"Tag {tag_id} updated successfully")
     return tag
 
+@router.delete("/batch", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_tags_batch(ids: List[int], db: AsyncSession = Depends(get_db)):
+    logger.info(f"Batch deleting tags: {ids}")
+    # Using delete statement would be more efficient but keeping it simple with ORM for now or individual deletes
+    # For bulk delete with SQLAlchemy async:
+    from sqlalchemy import delete
+    await db.execute(delete(Tag).where(Tag.id.in_(ids)))
+    await db.commit()
+    logger.info(f"Batch delete successful")
+
 @router.delete("/{tag_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_tag(tag_id: int, db: AsyncSession = Depends(get_db)):
     logger.info(f"Deleting tag {tag_id}")
@@ -67,13 +77,3 @@ async def delete_tag(tag_id: int, db: AsyncSession = Depends(get_db)):
     await db.delete(tag)
     await db.commit()
     logger.info(f"Tag {tag_id} deleted successfully")
-
-@router.delete("/batch", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_tags_batch(ids: List[int], db: AsyncSession = Depends(get_db)):
-    logger.info(f"Batch deleting tags: {ids}")
-    # Using delete statement would be more efficient but keeping it simple with ORM for now or individual deletes
-    # For bulk delete with SQLAlchemy async:
-    from sqlalchemy import delete
-    await db.execute(delete(Tag).where(Tag.id.in_(ids)))
-    await db.commit()
-    logger.info(f"Batch delete successful")

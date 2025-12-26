@@ -16,6 +16,7 @@ mkdir -p alembic/versions
 # Check if migration file exists (look for .py files), if not, generate it
 if [ -z "$(find alembic/versions -maxdepth 1 -name '*.py' -print -quit)" ]; then
    echo "No migrations found, generating initial migration..."
+   # Ensure user has write permission or ignore if not needed in prod
    alembic revision --autogenerate -m "Initial migration"
 fi
 alembic upgrade head

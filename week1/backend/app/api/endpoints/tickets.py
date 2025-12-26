@@ -105,6 +105,13 @@ async def update_ticket(ticket_id: int, ticket_update: TicketUpdate, db: AsyncSe
     logger.info(f"Ticket {ticket_id} updated successfully")
     return ticket
 
+@router.delete("/batch", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_tickets_batch(ids: List[int], db: AsyncSession = Depends(get_db)):
+    logger.info(f"Batch deleting tickets: {ids}")
+    await db.execute(delete(Ticket).where(Ticket.id.in_(ids)))
+    await db.commit()
+    logger.info(f"Batch delete successful")
+
 @router.delete("/{ticket_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_ticket(ticket_id: int, db: AsyncSession = Depends(get_db)):
     logger.info(f"Deleting ticket {ticket_id}")
@@ -117,10 +124,3 @@ async def delete_ticket(ticket_id: int, db: AsyncSession = Depends(get_db)):
     await db.delete(ticket)
     await db.commit()
     logger.info(f"Ticket {ticket_id} deleted successfully")
-
-@router.delete("/batch", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_tickets_batch(ids: List[int], db: AsyncSession = Depends(get_db)):
-    logger.info(f"Batch deleting tickets: {ids}")
-    await db.execute(delete(Ticket).where(Ticket.id.in_(ids)))
-    await db.commit()
-    logger.info(f"Batch delete successful")
