@@ -175,17 +175,40 @@ Tests should cover the following scenarios:
 
 ### 9.1 Ticket List View
 
+The view supports two display modes: **List (Table)** and **Grid (Cards)**.
+
+**Controls Area:**
+- **Search**: Input for searching tickets by title/description.
+- **Filter**: Dropdown to filter by specific tags.
+- **View Switcher**: Toggle button to switch between Grid and List views.
+- **Actions**: "New Ticket" button, "Delete Selected" button (for bulk actions).
+
+**Mode A: List View (Table)**
+- Columns: Selection, Title, Description (truncated), Tags (badges), Created At, Actions.
+- Best for managing many tickets and bulk selection.
+
+**Mode B: Grid View (Cards)**
+- Layout: Responsive grid of cards.
+- Card Header: Title + Action Icons (Edit, Delete).
+- Card Body: Description, Tags, and Date.
+- Best for visual browsing.
+
 ```
 +-----------------------------------------------------------------------+
 |  Ticket Management Tool                               [Tags View >]   |
 +-----------------------------------------------------------------------+
-|  [ Search Tickets... ]  [ Filter by Tag v ]     [+ New Ticket]        |
+|  [ Search Tickets... ]  [ Filter by Tag v ]     [ Grid/List View ]    |
+|                                                 [+ New Ticket]        |
 |                                                 [ Delete Selected ]   |
 +-----------------------------------------------------------------------+
-|  [ ] | Title          | Tags       | Created At   | Actions           |
-|  [x] | Fix Login Bug  | [Bug]      | 2023-10-25   | [Edit] [Delete]   |
-|  [ ] | Add Dark Mode  | [Feature]  | 2023-10-26   | [Edit] [Delete]   |
-|  [ ] | Update Docs    | [Docs]     | 2023-10-27   | [Edit] [Delete]   |
+|  (Grid View Example)                                                  |
+|  +----------------+  +----------------+  +----------------+           |
+|  | Fix Login Bug  |  | Add Dark Mode  |  | Update Docs    |           |
+|  | [Edit][Delete] |  | [Edit][Delete] |  | [Edit][Delete] |           |
+|  |                |  |                |  |                |           |
+|  | Description... |  | Description... |  | Description... |           |
+|  | [Bug]          |  | [Feature]      |  | [Docs]         |           |
+|  +----------------+  +----------------+  +----------------+           |
 +-----------------------------------------------------------------------+
 |  <  Prev  1  2  3  Next  >                                            |
 +-----------------------------------------------------------------------+
