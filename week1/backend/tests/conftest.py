@@ -4,6 +4,7 @@ from typing import AsyncGenerator
 from httpx import AsyncClient, ASGITransport
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import StaticPool
 
 # Set environment variables before importing app
 os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///:memory:"
@@ -17,7 +18,9 @@ from app.db.base import Base
 SQLALCHEMY_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
 
 engine = create_async_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+    SQLALCHEMY_DATABASE_URL, 
+    connect_args={"check_same_thread": False},
+    poolclass=StaticPool,
 )
 TestingSessionLocal = sessionmaker(
     engine, class_=AsyncSession, expire_on_commit=False
