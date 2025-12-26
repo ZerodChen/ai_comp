@@ -216,9 +216,9 @@ Tests should cover the following scenarios:
 ## 10. Local Environment Setup
 
 ### 10.1 Prerequisites
-- Python 3.12+
+- Python 3.13+
 - Node.js 22+
-- PostgreSQL 13+
+- PostgreSQL 17+
 
 ### 10.2 Backend Setup
 1. **Navigate to backend**: `cd backend`
