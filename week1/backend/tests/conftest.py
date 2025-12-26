@@ -1,8 +1,13 @@
 import pytest
+import os
 from typing import AsyncGenerator
 from httpx import AsyncClient, ASGITransport
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
+
+# Set environment variables before importing app
+os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///:memory:"
+
 from app.main import app
 from app.db.session import get_db
 from app.db.base import Base
