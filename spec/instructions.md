@@ -6,6 +6,7 @@ This is a simple tool that use tag to classify and manage the tickets. It use py
 - Tag creation/modification/batch deletion
 - Listing tickets by tag
 - Listing tickets by ticket title or description.
+
 check above idea and and then help to generate detailed requirements and designs then output to ./spec/week01/0001-instructions.md
 
 please also supplement below content in the 0001-instructions.md:
@@ -22,3 +23,65 @@ check spec/week01/0001-implementation-plan.md, then implement project as it ment
 
 ### Reviewing
 please check spec/week01/0001-implementation-plan.md then review the implementation under ./week1 folder, if any issue or mismatch found, please update the plan and implementation.
+
+### Project Standards & Best Practices (Prompts for Future Use)
+Use the following checklist and guidelines when starting a new project or reviewing an existing one to ensure high quality, security, and maintainability.
+
+#### 1. Security & Configuration
+**Prompt:** "Review the project configuration for security best practices, specifically regarding credential management and container permissions."
+
+- **Credentials**:
+  - NEVER hardcode secrets in `config.py`, `alembic.ini`, or `Dockerfile`.
+  - Use `.env` files for local development and exclude them via `.gitignore`.
+  - Use `pydantic-settings` to read environment variables with fallbacks only for non-sensitive defaults.
+  - In `docker-compose.yml`, inject secrets via `${VAR_NAME}` syntax.
+- **Docker Security**:
+  - Do NOT run containers as `root`. Create a non-root user (e.g., `appuser`) in the Dockerfile and switch to it using `USER appuser`.
+  - Ensure entrypoint scripts handle permission requirements for generated files (e.g., migrations) gracefully or pre-create directories with correct ownership.
+
+#### 2. Testing & Quality Assurance
+**Prompt:** "Setup a robust testing infrastructure targeting >95% code coverage, including edge cases and CI integration."
+
+- **Backend Testing**:
+  - Use `pytest` with `pytest-asyncio` and `httpx`.
+  - Use `aiosqlite` for fast in-memory database testing (`sqlite+aiosqlite:///:memory:`).
+  - Configure `pytest.ini` to standardize test paths and async modes.
+  - Install `pytest-cov` and configure `.coveragerc` to track coverage (target > 95%).
+  - **Critical Scenarios**: Test CRUD, Batch Operations, Idempotency, Filters, Pagination, and Error Handling (404, 422).
+- **CI/CD**:
+  - Create a GitHub Action (`.github/workflows/ci.yml`) to run tests automatically on Pull Requests and Pushes.
+  - Ensure CI uses the exact same Docker environment or dependency versions as production.
+
+#### 3. Frontend & UX Design
+**Prompt:** "Review the UI for user-friendliness and propose modern enhancements like card views and empty states."
+
+- **View Modes**:
+  - Support both **List View** (Table) for density/management and **Grid View** (Cards) for visual browsing.
+  - Include a toggle button to switch modes.
+- **Empty States**:
+  - Never show just a blank table. Use components like `el-empty` to display a friendly message when no data is found.
+- **Interactivity**:
+  - Use loading spinners (`v-loading`) during data fetches.
+  - Use confirmation dialogs (`ElMessageBox`) for destructive actions (Delete).
+  - Add toast notifications (`ElMessage`) for success/error feedback.
+
+#### 4. Infrastructure & Versioning
+**Prompt:** "Check and update dependency versions to the latest stable releases."
+
+- **Stack Versions**:
+  - Python: Use latest stable (e.g., `3.13+`).
+  - Node.js: Use latest LTS (e.g., `22+`).
+  - PostgreSQL: Use latest stable (e.g., `17+`).
+- **Dependency Management**:
+  - Pin versions in `requirements.txt` or `package.json` to avoid "it works on my machine" issues.
+  - Use multi-stage Docker builds to keep images slim.
+
+#### 5. Documentation
+**Prompt:** "Verify API documentation availability and update the project specs with deployment details."
+
+- **API Docs**:
+  - Leverage FastAPI's auto-generated docs: Swagger UI (`/docs`) and ReDoc (`/redoc`).
+  - Explicitly mention these URLs in the README/Instructions.
+- **Setup Instructions**:
+  - Provide clear steps for Local Dev (Docker Compose) vs. Production.
+  - Document how to run tests locally (`docker-compose exec backend pytest`).
