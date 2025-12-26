@@ -3,6 +3,7 @@ import { ref, onMounted, reactive, watch } from 'vue'
 import { getTickets, deleteTicket, deleteTicketsBatch } from '../api/tickets'
 import { getTags } from '../api/tags'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { Edit, Delete } from '@element-plus/icons-vue'
 import TicketDialog from '../components/TicketDialog.vue'
 
 const tickets = ref([])
@@ -41,6 +42,13 @@ const fetchTickets = async () => {
 watch(() => [filters.page, filters.tag_id], () => {
   fetchTickets()
 })
+
+// View Mode
+const viewMode = ref('list') // 'list' or 'grid'
+
+const toggleView = () => {
+  viewMode.value = viewMode.value === 'list' ? 'grid' : 'list'
+}
 
 const handleSearch = () => {
   filters.page = 1
@@ -135,6 +143,9 @@ onMounted(() => {
       </el-select>
 
       <div class="actions">
+        <el-button @click="toggleView">
+          {{ viewMode === 'list' ? 'Grid View' : 'List View' }}
+        </el-button>
         <el-button type="primary" @click="handleCreate">New Ticket</el-button>
         <el-button type="danger" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
           Delete Selected
@@ -142,7 +153,12 @@ onMounted(() => {
       </div>
     </div>
 
+    <!-- Empty State -->
+    <el-empty v-if="!loading && tickets.length === 0" description="No tickets found" />
+
+    <!-- List View -->
     <el-table
+      v-else-if="viewMode === 'list'"
       v-loading="loading"
       :data="tickets"
       style="width: 100%; margin-top: 20px"
@@ -175,6 +191,45 @@ onMounted(() => {
         </template>
       </el-table-column>
     </el-table>
+
+    <!-- Grid View -->
+    <div v-else class="grid-view" v-loading="loading">
+      <el-row :gutter="20">
+        <el-col :xs="24" :sm="12" :md="8" :lg="6" v-for="ticket in tickets" :key="ticket.id">
+          <el-card class="ticket-card" shadow="hover">
+            <template #header>
+              <div class="card-header">
+                <span class="ticket-title">{{ ticket.title }}</span>
+                <div class="card-actions">
+                  <el-button size="small" circle @click="handleEdit(ticket)">
+                    <el-icon><Edit /></el-icon>
+                  </el-button>
+                  <el-button size="small" type="danger" circle @click="handleDelete(ticket)">
+                    <el-icon><Delete /></el-icon>
+                  </el-button>
+                </div>
+              </div>
+            </template>
+            <div class="card-content">
+              <p class="description">{{ ticket.description || 'No description' }}</p>
+              <div class="tags">
+                <el-tag
+                  v-for="tag in ticket.tags"
+                  :key="tag.id"
+                  size="small"
+                  effect="light"
+                >
+                  {{ tag.name }}
+                </el-tag>
+              </div>
+              <div class="footer">
+                <span class="date">{{ formatDate(ticket.created_at) }}</span>
+              </div>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+    </div>
 
     <div class="pagination">
       <el-pagination
