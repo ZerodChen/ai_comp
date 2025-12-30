@@ -85,3 +85,34 @@ Use the following checklist and guidelines when starting a new project or review
 - **Setup Instructions**:
   - Provide clear steps for Local Dev (Docker Compose) vs. Production.
   - Document how to run tests locally (`docker-compose exec backend pytest`).
+
+## Week2 - DbQueryHelper
+### Porject Requirement and design
+This tool is a helper to query database. It provides a simple interface for user to query provided database in natual languange or SQL.
+Basic flow:
+- **Connect & Index**: User provides a DB URL; the tool connects, caches metadata in SQLite, and displays available tables/views.
+- **Natural Language Query**: Converts natural language questions into SQL using an LLM (online or local) and executes them.
+- **SQL Query**: Validates raw SQL for syntax errors and security risks before execution.
+
+Core features:
+- Unified interface for querying multiple databases.
+- Support for both natural language and raw SQL inputs.
+- Multi-database connection support.
+- Secure query validation and execution.
+- Export query results to CSV or JSON.
+
+Technical stack:
+- **Backend**: FastAPI, SQLAlchemy, Alembic, Pydantic.
+- **Frontend**: Vue.js, Element Plus.
+- **Database**: SQLite (for metadata storage).
+- **LLM Integration**: OpenAI API or local models (e.g., via `transformers`).
+- **Deployment**: Docker Compose for local dev, Kubernetes for production.
+
+As per above requirement, please help to design the project then generate the detailed requirements and designs to ../week2/spec/0001-instructions.md, don't forget below content:
+* unit test case, coverage is over 90%.
+* UI design preview, 2 UI mode could support switching.
+* Local environment setup instructions.
+* Deployment instruction for local dev and productions
+
+### Implementation plan
+please help to generate detailed implementation plan as per ../week2/spec/0001-instructions.md, I know that this tool is a bit complex, you could implement it in different no more than 4 phases, each phase should have clear deliverables and timelines. this implementaion plan will be output to ../week2/spec/0002-implementation-plan.md.
