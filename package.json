@@ -1,9 +1,18 @@
 {
+  "name": "ai-compus",
+  "version": "1.0.0",
+  "description": "AI Campus Multi-Week Project",
+  "scripts": {
+    "dev:week1-frontend": "cd week1/frontend && npm run dev",
+    "dev:week1-backend": "cd week1/backend && python main.py",
+    "install:all": "npm install && pip install -r requirements.txt"
+  },
   "dependencies": {
-    "axios": "^1.13.2",
-    "element-plus": "^2.13.0",
-    "pinia": "^3.0.4",
-    "sass": "^1.97.1",
-    "vue-router": "^4.6.4"
+    "vue": "^3.3.0",
+    "vue-router": "^4.2.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.4.0",
+    "vite": "^4.4.0"
   }
 }
