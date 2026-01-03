@@ -116,3 +116,6 @@ As per above requirement, please help to design the project then generate the de
 
 ### Implementation plan
 please help to generate detailed implementation plan as per ../week2/spec/0001-instructions.md, I know that this tool is a bit complex, you could implement it in different no more than 4 phases, each phase should have clear deliverables and timelines. this implementaion plan will be output to ../week2/spec/0002-implementation-plan.md.
+
+### Implementation
+please check #0002-implementation-plan.md for detailed implementation plan then implementa phase1 as mentioned, sources code will be put under ../week2, please also help to add necessary comments and docstrings to the code and generate a readme under week2 directory.

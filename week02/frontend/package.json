@@ -1,0 +1,23 @@
+{
+  "name": "week02-frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.5.24",
+    "element-plus": "^2.9.2",
+    "axios": "^1.7.9",
+    "pinia": "^2.3.0",
+    "vue-router": "^4.5.0",
+    "sass": "^1.83.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.1",
+    "vite": "^7.2.4"
+  }
+}

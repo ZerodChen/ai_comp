@@ -2,6 +2,11 @@
 
 This document outlines the step-by-step implementation plan for the **AI-Powered Database Query Tool**. The project is divided into 4 distinct phases to ensure steady progress and clear deliverables.
 
+### Prerequisites
+- Python 3.13+
+- Node.js 22+
+- Docker & Docker Compose (optional)
+
 ## Phase 1: Foundation & Connectivity
 **Goal**: Establish the backend infrastructure and enable database connection management with metadata indexing.
 **Timeline**: Days 1-2

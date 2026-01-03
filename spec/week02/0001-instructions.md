@@ -237,7 +237,7 @@ We will use `pytest` for backend testing and also make sure test coverage meet 9
 ## 7. Local Environment Setup
 
 ### 7.1 Prerequisites
-- Python 3.12+
+- Python 3.13+
 - Node.js 22+
 - Docker & Docker Compose (optional)
 
