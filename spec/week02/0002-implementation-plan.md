@@ -137,8 +137,9 @@ This document outlines the step-by-step implementation plan for the **AI-Powered
 3.  **Deployment Prep**
     *   [ ] Create `Dockerfile` for Backend.
     *   [ ] Create `Dockerfile` for Frontend (multi-stage build).
-    *   [ ] Create `docker-compose.yml` for easy local orchestration.
-    *   [ ] Document environment variables (`OPENAI_API_KEY`, `DATABASE_URL`).
+    *   [ ] Create `docker-compose.yml` with secure environment variable configuration (`.env`).
+    *   [ ] Add `db-test-pg` service to Docker Compose for local testing.
+    *   [ ] Document environment variables (`OPENAI_API_KEY`, `POSTGRES_USER`, etc.).
 
 ### Deliverables
 *   Production-ready Docker configuration.
@@ -148,5 +149,6 @@ This document outlines the step-by-step implementation plan for the **AI-Powered
 
 ### Verification
 1.  **Export**: Run a query -> Click "Export CSV" -> Verify file downloads and opens correctly.
-2.  **Tests**: Run `pytest --cov=app` -> Verify passing tests and >90% coverage report.
-3.  **Docker**: Run `docker-compose up` -> Verify app is accessible at `http://localhost:5173` and API at `http://localhost:8000`.
+2.  **Tests**: Run `pytest` -> Verify passing tests.
+3.  **Docker**: Run `docker-compose up` -> Verify app is accessible at `http://localhost:5173`.
+4.  **Test DB**: Verify `db-test-pg` container is running and accessible.

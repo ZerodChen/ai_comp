@@ -100,7 +100,11 @@ A PostgreSQL database with sample data is included in the Docker Compose setup f
 - **Database**: `testdb`
 
 You can connect to this database using the tool to test schema indexing and querying.
-Connection URL: `postgresql://testuser:testpassword@db-test-pg:5432/testdb` (when running backend in Docker) or `postgresql://testuser:testpassword@localhost:5432/testdb` (when running backend locally).
+
+| Environment | Connection URL |
+| :--- | :--- |
+| **Running Locally** (Development) | `postgresql://testuser:testpassword@localhost:5432/testdb` |
+| **Running in Docker** (Compose) | `postgresql://testuser:testpassword@db-test-pg:5432/testdb` |
 
 ## API Documentation
 

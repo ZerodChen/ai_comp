@@ -10,6 +10,9 @@ logger = logging.getLogger(__name__)
 class LLMService:
     def __init__(self, db: Session):
         self.db = db
+        self.provider = os.getenv("LLM_PROVIDER", "openai").lower()
+        self.ollama_base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434/v1")
+        self.model = os.getenv("OLLAMA_MODEL", "llama3") if self.provider == "ollama" else "gpt-3.5-turbo"
 
     def generate_sql(self, connection_id: int, question: str) -> str:
         # 1. Fetch schema for context
@@ -20,31 +23,49 @@ class LLMService:
 
         schema_text = ""
         for table in tables:
-            schema_text += f"Table: {table.table_name}\nColumns:\n"
+            # Generate DDL-like schema for better LLM understanding
+            schema_text += f"CREATE TABLE {table.table_name} (\n"
+            cols = []
             for col in table.columns:
-                schema_text += f"  - {col.column_name} ({col.data_type})\n"
-            schema_text += "\n"
+                col_def = f"  {col.column_name} {col.data_type}"
+                if col.is_primary_key:
+                    col_def += " PRIMARY KEY"
+                # Note: FKs could be added here if we stored the target table/col in metadata efficiently
+                cols.append(col_def)
+            schema_text += ",\n".join(cols)
+            schema_text += "\n);\n\n"
             
         # 2. Construct Prompt
         system_prompt = f"""You are an expert database engineer. Convert the user's natural language question into a valid SQL query.
 The database schema is as follows:
 {schema_text}
 
-Return ONLY the SQL query. Do not use markdown blocks (```sql). Do not add explanations.
-Ensure the SQL is compatible with PostgreSQL (or standard SQL).
+Rules:
+1. Return ONLY the SQL query. 
+2. Do not use markdown blocks (```sql). 
+3. Do not add explanations or introductory text.
+4. Ensure the SQL is compatible with PostgreSQL.
+5. If the question cannot be answered with the schema, return SELECT 'ERROR: Cannot answer'
 """
         
         # 3. Call LLM
         try:
-            # Check if API key exists
-            if not os.getenv("OPENAI_API_KEY"):
-                # Mock response for testing if no key provided
-                logger.warning("OPENAI_API_KEY not found. Returning mock SQL.")
-                return "SELECT * FROM users LIMIT 5;" 
+            client = None
+            if self.provider == "ollama":
+                # Ollama is OpenAI compatible
+                client = openai.OpenAI(
+                    base_url=self.ollama_base_url,
+                    api_key="ollama" # Required but ignored
+                )
+            else:
+                # OpenAI
+                if not os.getenv("OPENAI_API_KEY"):
+                    raise ValueError("OPENAI_API_KEY is not set. Please configure it in .env or use LLM_PROVIDER=ollama.")
+                
+                client = openai.OpenAI()
 
-            client = openai.OpenAI() # Uses OPENAI_API_KEY env var
             response = client.chat.completions.create(
-                model="gpt-3.5-turbo", 
+                model=self.model,
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": question}
@@ -62,6 +83,9 @@ Ensure the SQL is compatible with PostgreSQL (or standard SQL).
                 if lines[-1].startswith("```"):
                     lines = lines[:-1]
                 sql = "\n".join(lines)
+            
+            # Remove any "Here is the SQL:" prefix if local model is chatty
+            sql = sql.replace("Here is the SQL:", "").strip()
             
             return sql.strip()
 

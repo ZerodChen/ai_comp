@@ -24,8 +24,10 @@ class MetadataService:
             self.db.query(TableMetadata).filter(TableMetadata.connection_id == connection_id).delete()
             
             table_names = inspector.get_table_names()
+            view_names = inspector.get_view_names()
+            all_names = table_names + view_names
             
-            for table_name in table_names:
+            for table_name in all_names:
                 table_metadata = TableMetadata(
                     connection_id=connection_id,
                     table_name=table_name

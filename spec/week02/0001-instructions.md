@@ -48,7 +48,7 @@ This project is an intelligent database helper tool that allows users to query d
 - **Frontend**: Vue.js 3 + Element Plus (Single Page Application).
 - **Backend**: FastAPI (Python) serving REST APIs.
 - **Metadata Store**: SQLite database managed by the backend.
-- **AI Engine**: Service layer connecting to OpenAI API or local HuggingFace models.
+- **AI Engine**: Service layer connecting to OpenAI API or **Local Ollama** models.
 
 ### 3.2 Backend Stack
 - **Framework**: FastAPI
@@ -247,7 +247,7 @@ cd week2/backend
 python -m venv .venv
 source .venv/bin/activate  # or .venv\Scripts\activate on Windows
 pip install -r requirements.txt
-cp .env.example .env       # Configure OPENAI_API_KEY
+cp .env.example .env       # Configure OPENAI_API_KEY or LLM_PROVIDER=ollama
 alembic upgrade head       # Initialize metadata store
 uvicorn app.main:app --reload
 ```
@@ -262,25 +262,43 @@ npm run dev
 ## 8. Deployment Instructions
 
 ### 8.1 Local Development (Docker Compose)
-A `docker-compose.yml` will be provided to spin up both frontend and backend.
+A `docker-compose.yml` will be provided to spin up frontend, backend, and a test database.
 
 ```yaml
 version: '3.8'
 services:
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     ports:
       - "8000:8000"
-    env_file: .env
     volumes:
       - ./backend:/app
+      - ./backend/metadata.db:/app/metadata.db
+    env_file:
+      - ./backend/.env
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     ports:
-      - "5173:5173"
+      - "5173:80"
     depends_on:
       - backend
+
+  db-test-pg:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
 ```
 
 ### 8.2 Production Deployment

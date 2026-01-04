@@ -53,23 +53,35 @@ JOIN users u ON o.user_id = u.id
 LEFT JOIN order_items oi ON o.id = oi.order_id
 GROUP BY o.id, u.username, o.total_amount, o.status, o.created_at;
 
--- Insert Sample Data
-INSERT INTO users (username, email) VALUES
-('alice', 'alice@example.com'),
-('bob', 'bob@example.com'),
-('charlie', 'charlie@example.com');
+-- Insert Sample Data using generate_series for volume
+INSERT INTO users (username, email) 
+SELECT 
+    'user_' || s, 
+    'user_' || s || '@example.com'
+FROM generate_series(1, 50) AS s;
 
-INSERT INTO products (name, price, stock_quantity) VALUES
-('Laptop', 999.99, 10),
-('Mouse', 25.50, 100),
-('Keyboard', 50.00, 50),
-('Monitor', 200.00, 20);
+INSERT INTO products (name, price, stock_quantity)
+SELECT 
+    'Product ' || s,
+    (random() * 100 + 10)::decimal(10,2),
+    (random() * 100)::int
+FROM generate_series(1, 20) AS s;
 
-INSERT INTO orders (user_id, status, total_amount) VALUES
-(1, 'completed', 1025.49),
-(2, 'pending', 50.00);
+INSERT INTO orders (user_id, status, total_amount)
+SELECT 
+    (floor(random() * 50) + 1)::int,
+    CASE (floor(random() * 3))::int 
+        WHEN 0 THEN 'pending' 
+        WHEN 1 THEN 'completed' 
+        ELSE 'cancelled' 
+    END,
+    (random() * 500 + 20)::decimal(10,2)
+FROM generate_series(1, 100) AS s;
 
-INSERT INTO order_items (order_id, product_id, quantity, unit_price) VALUES
-(1, 1, 1, 999.99), -- Laptop
-(1, 2, 1, 25.50),  -- Mouse
-(2, 3, 1, 50.00);  -- Keyboard
+INSERT INTO order_items (order_id, product_id, quantity, unit_price)
+SELECT 
+    (floor(random() * 100) + 1)::int,
+    (floor(random() * 20) + 1)::int,
+    (floor(random() * 5) + 1)::int,
+    (random() * 100 + 10)::decimal(10,2)
+FROM generate_series(1, 200) AS s;
