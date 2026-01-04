@@ -6,6 +6,7 @@ This project is an intelligent helper tool that allows users to query databases 
 
 - `backend/`: FastAPI application (Python)
 - `frontend/`: Vue 3 application (Node.js)
+- `db-test/`: Test database initialization scripts (e.g., PostgreSQL).
 
 ## Phase 1: Foundation & Connectivity (Implemented)
 
@@ -39,9 +40,8 @@ We have established the backend infrastructure, including:
 
 3. **Install dependencies**:
    ```bash
-   pip install -r requirements.txt
+   pip install -r ../../requirements.txt
    ```
-   *(Note: Ensure `requirements.txt` exists in root or `week02/backend`)*
 
 4. **Initialize Database**:
    ```bash
@@ -67,6 +67,40 @@ We have established the backend infrastructure, including:
    Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/v1/connections/1/schema" -Method Get
    ```
    You should see a JSON list of tables (`db_connections`, `table_metadata`) and their columns.
+
+## Testing
+
+To run the backend test suite:
+
+```bash
+cd week02/backend
+pytest
+```
+
+## Deployment
+
+To run the full stack using Docker Compose:
+
+```bash
+cd week02
+docker-compose up --build
+```
+
+- **Frontend**: http://localhost:5173
+- **Backend API**: http://localhost:8000
+
+## Test Database
+
+A PostgreSQL database with sample data is included in the Docker Compose setup for testing purposes.
+
+- **Host**: `localhost` (or `db-test-pg` inside docker network)
+- **Port**: `5432`
+- **User**: `testuser`
+- **Password**: `testpassword`
+- **Database**: `testdb`
+
+You can connect to this database using the tool to test schema indexing and querying.
+Connection URL: `postgresql://testuser:testpassword@db-test-pg:5432/testdb` (when running backend in Docker) or `postgresql://testuser:testpassword@localhost:5432/testdb` (when running backend locally).
 
 ## API Documentation
 
