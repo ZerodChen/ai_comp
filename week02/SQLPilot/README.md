@@ -1,4 +1,4 @@
-# Week 2: AI-Powered Database Query Tool
+# SQLPilot (Week 2: Foundation)
 
 This project is an intelligent helper tool that allows users to query databases using both Natural Language and raw SQL.
 
@@ -26,7 +26,7 @@ We have established the backend infrastructure, including:
 
 1. **Navigate to backend**:
    ```bash
-   cd week02/backend
+   cd week02/SQLPilot/backend
    ```
 
 2. **Create and activate virtual environment**:
@@ -40,7 +40,7 @@ We have established the backend infrastructure, including:
 
 3. **Install dependencies**:
    ```bash
-   pip install -r ../../requirements.txt
+   pip install -r ../../../requirements.txt
    ```
 
 4. **Initialize Database**:
@@ -73,7 +73,7 @@ We have established the backend infrastructure, including:
 To run the backend test suite:
 
 ```bash
-cd week02/backend
+cd week02/SQLPilot/backend
 pytest
 ```
 
@@ -82,7 +82,7 @@ pytest
 To run the full stack using Docker Compose:
 
 ```bash
-cd week02
+cd week02/SQLPilot
 docker-compose up --build
 ```
 
